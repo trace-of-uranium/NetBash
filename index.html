@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Terminal</title>
+<style>
+:root{--bg:#14161a;--bar:#0e1013;--fg:#d9dde3;--g:#8fd18a;--b:#6fa8ff;--r:#ff7b72;--dim:#7b8494}
+*{box-sizing:border-box}
+html,body{height:100%;margin:0;background:var(--bg);color:var(--fg)}
+body{display:flex;flex-direction:column;font:15px/1.45 ui-monospace,Menlo,Consolas,"DejaVu Sans Mono",monospace}
+#bar{display:flex;gap:6px;padding:6px 10px;background:var(--bar)}
+#bar button{font:inherit;color:var(--dim);background:none;border:1px solid #2a2f37;border-radius:6px;padding:4px 12px;cursor:pointer}
+#bar button[aria-pressed=true]{color:var(--fg);border-color:var(--g)}
+#bar button:focus-visible{outline:2px solid var(--b)}
+#sim{flex:1;min-height:0}
+#t{height:100%;overflow:auto;padding:14px 16px;white-space:pre-wrap;word-break:break-all}
+.pr{color:var(--g)}.pd{color:var(--b)}.er{color:var(--r)}
+#row{display:flex}#pr{white-space:pre}
+#in{flex:1;min-width:0;background:none;border:0;outline:0;color:inherit;font:inherit;padding:0;caret-color:var(--g)}
+#linux{display:none;flex:1;min-height:0;overflow:auto;padding:10px}
+#linuxmsg{white-space:pre-wrap;color:var(--dim);margin:0 0 8px}
+#screen{display:inline-block}
+</style></head>
+<body>
+<div id="bar" role="tablist">
+<button id="b1" role="tab" aria-pressed="true">Simulated shell</button>
+<button id="b2" role="tab" aria-pressed="false">Real Linux</button>
+</div>
+<div id="sim"><div id="t"><div id="log"></div><div id="row"><span id="pr"></span><input id="in" autocomplete="off" autocapitalize="off" spellcheck="false" aria-label="Terminal input" autofocus></div></div></div>
+<div id="linux"><pre id="linuxmsg"></pre>
+<div id="screen"><div style="white-space:pre;font:14px monospace;line-height:14px"></div><canvas style="display:none"></canvas></div></div>
+<script src="config.js"></script>
+<script src="shell.js"></script>
+<script src="linux.js"></script>
+<script>
+const tabs={b1:['sim',false],b2:['linux',true]};
+for(const id in tabs)document.getElementById(id).onclick=()=>{
+  for(const k in tabs){document.getElementById(tabs[k][0]).style.display=k===id?'block':'none';document.getElementById(k).setAttribute('aria-pressed',k===id)}
+  linuxKeys(tabs[id][1]);
+  if(tabs[id][1])startLinux();else document.getElementById('in').focus();
+};
+</script>
+</body></html>
