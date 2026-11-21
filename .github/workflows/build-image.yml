@@ -1,0 +1,17 @@
+name: Build bash image
+on: workflow_dispatch
+permissions:
+  contents: write
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: bash build/build-image.sh
+      - name: Commit image
+        run: |
+          git config user.name "image-builder"
+          git config user.email "actions@users.noreply.github.com"
+          git add -f images/bzImage images/rootfs.cpio.gz
+          git commit -m "Build bash image" || echo "nothing to commit"
+          git push
